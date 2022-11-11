@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Login {% endblock %}
+{% block css %}
+  <link href="{% static 'css/login.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block messages %}{% endblock %}
+
+{% block body %}
+
+    <div class="content">
+        <div class="container">
+            <h1>{{ user.email }}</h1>
+                {% if object.current %}
+                <a class="btn btn-outline-primary btn-rounded" role="button" href="{% url 'timetracker:take_screenshot'%}">Screenshot</a>
+                <p class="fw-lighter fs-10 text">This will trigger an event that takes screenshots in 5 second intervals maximum of 5.</p>
+                <a class="btn btn-outline-primary btn-rounded" role="button" href="{% url 'timetracker:new_time_frame'%}">New Time Frame</a>
+                <p class="fw-lighter fs-10 text">This will create a new time frame and end the previous one </br> This will also automatically trigger the same screenshot functionality above.</p>
+                {% endif %}
+
+                <h4 class="mt-5">Time Frames</h4>
+
+                <hr>
+                {% for stf in sessions_time_frames %}
+                <div class="accordion accordion-flush" id="accordionFlushExample">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            <div class="container">
+                                <div class="row align-items-start">
+                                    <div class="col"><b>Start: </b> {{ stf.start }}</div>
+                                    <div class="col"><b>End: </b> {{ stf.end }}</div>
+                                </div>
+                            </div>
+                        </button>
+                    </h2>
+                    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            {% if stf.time_frame_screenshots.all %}
+                            <table class="table mb-0 ms-5">
+                                <tbody>
+                                    {% for ss in stf.time_frame_screenshots.all %}
+                                        <tr>
+                                            <td>
+                                                <!-- Button trigger modal -->
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-primary open-modal-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#ss_modal"
+                                                    data-url={{ss.photo.url}}
+                                                    data-name={{ss}}>
+                                                  {{ss}}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+    <!-- Vertically centered scrollable modal -->
+    <div class="modal fade" id="ss_modal" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">{{ss}}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+                <img src="{{ss.photo.url}}" class="img-fluid">
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'js/screenshot.js' %}"></script>
+{% endblock %}

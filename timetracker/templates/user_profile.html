@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Login {% endblock %}
+{% block css %}
+  <link href="{% static 'css/login.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block messages %}{% endblock %}
+
+{% block body %}
+
+    <div class="content">
+        <div class="container">
+            <h1>{{ user.email }}</h1>
+            <div class="container mt-5">
+                <div class="row align-items-start">
+                    <div class="col"><h4>Sessions</h4></div>
+                    <div class="col-2">
+                    	<a class="btn btn-outline-primary btn-rounded" role="button" href="{% url 'timetracker:new_session'%}">New Session</a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+		    <table class="table table-hover" id="example">
+		        <thead>
+		            <tr>
+		                <th>Start</th>
+		                <th>End</th>
+		                <th>Status</th>
+		                <th></th>
+		            </tr>
+		        </thead>
+		        <tbody>
+		            {% for us in user_sessions %}
+		            <tr>
+		                <td>{{us.start}}</td>
+		                <td>{{us.end}}</td>
+		                <td>
+		                	{% if us.current %}
+							Current
+							{% else %}
+							Closed
+							{% endif %}
+		            	</td>
+		                <td><a class="btn btn-outline-primary btn-rounded" role="button" href="{% url 'timetracker:session_details' us.id %}">Details</a></td>
+		            </tr>
+		            {% endfor %}
+		        </tbody>
+		    </table>
+		</div>
+    </div>
+
+{% endblock %}
+
+{% block js %}{% endblock %}
